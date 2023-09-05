@@ -14,7 +14,7 @@ const roomHandler = (socket)=>{
         console.log("joined room", roomId, peerId);
         rooms[roomId].push(peerId)
         socket.join(roomId);
-
+        socket.to(roomId).emit("user-joined", {peerId})
         socket.emit("get-users", {
             roomId,
             participants: rooms[roomId],
@@ -25,7 +25,6 @@ const roomHandler = (socket)=>{
             console.log({roomId, peerId})
         })
     }
-
 
     socket.on('create-room', createRoom)
     socket.on('join-room', joinRoom)
