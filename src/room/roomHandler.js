@@ -11,7 +11,7 @@ const roomHandler = (socket)=>{
     }
 
     const joinRoom =({roomId, peerId})=>{
-        console.log("joined room", roomId, peerId);
+        console.log("user joined the room:", roomId, peerId);
         rooms[roomId].push(peerId)
         socket.join(roomId);
         socket.to(roomId).emit("user-joined", {peerId})
@@ -22,16 +22,16 @@ const roomHandler = (socket)=>{
         
         socket.on('disconnect',()=>{
             console.log('user left the room', peerId)
-            console.log({roomId, peerId})
+            leaveRoom({roomId, peerId})
         })
     }
 
+    const leaveRoom =({roomId, peerId})=>{
+        rooms[roomId] = rooms[roomId].filter((id)=>id !== peerId);
+        socket.to(roomId).emit('user-disconneted', peerId)
+    }
     socket.on('create-room', createRoom)
     socket.on('join-room', joinRoom)
 }
 
-const leaveRoom =({roomId, peerId})=>{
-    rooms[roomId] = rooms[roomsId].filter((id)=>id !== peerId);
-    socket.to(roomId).emit('user-disconneted', peerId)
-}
-module.exports =roomHandler
+module.exports =roomHandler;
